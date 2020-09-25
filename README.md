@@ -1,2 +1,3 @@
 # MScThesis
 Modafar MSc Thesis work (BME)
+This repo contains My MSc Thesis experiments notebooks, results, details, etc...
