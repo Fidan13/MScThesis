@@ -182,7 +182,7 @@ def prepare_data(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels,
 
   #>>> 70% (Train) of Region 1 + Region 2 + Region 3
   x_tr, y_tr = [], []
-  for x in range(no_of_clusters):
+  for x in range(no_cluster):
     x_tr.extend(x_tr_R01[x])
     y_tr.extend(y_tr_R01[x])
     x_tr.extend(x_tr_R02[x])
@@ -198,7 +198,7 @@ def prepare_data(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels,
   #############################################
 
   x_v, y_v = [], []
-  for x in range(no_of_clusters):
+  for x in range(no_cluster):
     x_v.extend(x_v_R01[x])
     y_v.extend(y_v_R01[x])
     x_v.extend(x_v_R02[x])
