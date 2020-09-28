@@ -3,12 +3,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import math
+import umap
 from sklearn.model_selection import train_test_split
+from keras.utils import to_categorical
+from keras.preprocessing.image import ImageDataGenerator, img_to_array, array_to_img
 
 # List of functions:::
 
 # Cluster details >>> No. of clusters, No. of Points in each cluster
-def clusters_det(hdbscan_labels):
+def clusters_det(hdb_labels):
   m = 0
   no_of_clusters = 0
   for i in range(10):
