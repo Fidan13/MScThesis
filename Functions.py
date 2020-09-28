@@ -15,10 +15,10 @@ def clusters_det(hdb_labels):
   m = 0
   no_of_clusters = 0
   for i in range(10):
-    m += np.count_nonzero(hdbscan_labels == i)
-    if np.count_nonzero(hdbscan_labels == i) != 0:
+    m += np.count_nonzero(hdb_labels == i)
+    if np.count_nonzero(hdb_labels == i) != 0:
       no_of_clusters += 1
-    print(f'{i}\t', np.count_nonzero(hdbscan_labels == i))
+    print(f'{i}\t', np.count_nonzero(hdb_labels == i))
 
   print('total Data point\t', m)
   print('total No. of Clusters\t', no_of_clusters)
