@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 # List of functions:::
 
 # Cluster details >>> No. of clusters, No. of Points in each cluster
-def clusters_det():
+def clusters_det(hdbscan_labels):
   m = 0
   no_of_clusters = 0
   for i in range(10):
