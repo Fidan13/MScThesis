@@ -8,7 +8,71 @@ from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
 from keras.preprocessing.image import ImageDataGenerator, img_to_array, array_to_img
 
+# All groups & experiments
+# Group:{Exp:[Avg, Sub-avg, Rare]}
+
+all_exp = {
+    0:{
+        0: [0,0,0]
+    },
+    1:{
+        1:[10, 50, 40],
+        2:[10, 45, 45],
+        3:[10, 40, 50],
+        4:[10, 35, 55],
+        5:[10, 55, 35]
+    },
+    2:{
+        6:[15, 50, 35],
+        7:[15, 45, 40],
+        8:[15, 40, 45],
+        9:[15, 35, 50]
+    },
+    3:{
+        10:[20, 45, 35],
+        11:[20, 40, 40],
+        12:[20, 35, 45]
+    },
+    4:{
+        13:[25, 40, 35],
+        14:[25, 35, 40]
+    },
+    5:{
+        15:[30, 35, 35]
+    },
+    6:{
+        16:[10, 70, 20],
+        17:[10, 20, 70],
+        18:[70, 20, 10],
+        19:[70, 10, 20]
+    }
+}
+
 # List of functions:::
+
+#Listing all experiments
+
+def print_exps(groups):
+  print('\t\t\tAvg\tSub-Avg\tRare')
+  print('--------------------------------------------')
+  for group in groups:
+    print(f'Group: {group}')
+    this_group = groups[group]
+    for exp in this_group:
+      print(f'Experiment: {exp}>\t\t{this_group[exp][0]}\t{this_group[exp][1]}\t{this_group[exp][2]}')
+    print('--------------------------------------------')
+    
+#Choosing group and experiment
+
+def exp_details(exps):
+  print_exps(exps)
+  g_idx = input('Enter group No.')
+  exp_idx = input('Enter exp No.')
+  [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
+  print(f'for Group {g_idx} Experiment {exp_idx} split as the following:')
+  print('Avg\tSub-Avg\tRare')
+  print(f'{avg}\t{sub}\t{rare}')
+  return g_idx, exp_idx, avg, sub, rare
 
 # Cluster details >>> No. of clusters, No. of Points in each cluster
 def clusters_det(hdb_labels):
