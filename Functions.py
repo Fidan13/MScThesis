@@ -68,11 +68,23 @@ def exp_details(exps):
   print_exps(exps)
   g_idx = input('Enter group No.')
   exp_idx = input('Enter exp No.')
-  [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
-  print(f'for Group {g_idx} Experiment {exp_idx} split as the following:')
-  print('Avg\tSub-Avg\tRare')
-  print(f'{avg}\t{sub}\t{rare}')
-  return g_idx, exp_idx, avg, sub, rare
+  stratify = input('Data split is stratified (Y/N)')
+  if stratify.lower() == 'y':
+    stratify = True
+    strat = 'stratified'
+  else:
+    stratify = False
+    strat = 'not stratified'
+
+  if g_idx == '0' and exp_idx = '0':
+    print('This is a Ground Truth Experiment')
+  else:
+    [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
+    print(f'for Group {g_idx} Experiment {exp_idx} split as the following:')
+    print('Avg\tSub-Avg\tRare')
+    print(f'{avg}\t{sub}\t{rare}')
+  print(f'the data spliting is {strat}')
+  return g_idx, exp_idx, avg, sub, rare, stratify
 
 # Cluster details >>> No. of clusters, No. of Points in each cluster
 def clusters_det(hdb_labels):
