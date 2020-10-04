@@ -242,7 +242,7 @@ def stratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03,
   x_train02, x02, y_train02, y02 = train_test_split(x_Region02, y_Region02, train_size= 0.7, test_size= 0.3, stratify = y_Region02)
   x_valid02, x_test02, y_valid02, y_test02 = train_test_split(x02, y02, train_size= 2/3, test_size= 1/3, stratify = y02)
 
-  x_train03, x03, y_train03, y03 = train_test_split(x_Region03, y_Region03, train_size= 0.7, test_size= 0.3, stratify = y_R03)
+  x_train03, x03, y_train03, y03 = train_test_split(x_Region03, y_Region03, train_size= 0.7, test_size= 0.3, stratify = y_Region03)
   x_valid03, x_test03, y_valid03, y_test03 = train_test_split(x03, y03, train_size= 2/3, test_size= 1/3, stratify = y03)
 
   x_train = np.vstack((x_train01, x_train02, x_train03))
