@@ -76,7 +76,7 @@ def exp_details(exps):
     stratify = False
     strat = 'not stratified'
 
-  if g_idx == '0' and exp_idx = '0':
+  if g_idx == '0' and exp_idx == '0':
     print('This is a Ground Truth Experiment')
   else:
     [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
