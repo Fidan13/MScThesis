@@ -210,74 +210,70 @@ def show_split(R_1, R_2, R_3, cluster_no):
   return None
 
 #Data Preparation and Train, Test, Validate splitting for training
-def prepare_data(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels):
-  #Region 1 arrays initiating
-  x_tr_R01, x_v_R01, y_tr_R01, y_v_R01 = [], [], [], []
-  #Region 2 arrays initiating
-  x_tr_R02, x_v_R02, y_tr_R02, y_v_R02 = [], [], [], []
-  #Region 3 arrays initiating
-  x_tr_R03, x_v_R03, y_tr_R03, y_v_R03 = [], [], [], []
+def prepare_data(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, stratify = False):
+  x_R01, y_R01 = [], []
+  x_R02, y_R02 = [], []
+  x_R03, y_R03 = [], []
+  for z in range(no_cluster):
+    x_R01.extend(R_1_original[z])
+    y_R01.extend(R_1_labels[z])
+    x_R02.extend(R_2_original[z])
+    y_R02.extend(R_2_labels[z])
+    x_R03.extend(R_3_original[z])
+    y_R03.extend(R_3_labels[z])
+  
+  if stratify:
+    x_train, y_train, x_valid, y_valid, x_test, y_test = stratified_split(x_R01, y_R01, x_R02, y_R02, x_R03, y_R03)
+  else:
+    x_train, y_train, x_valid, y_valid, x_test, y_test = unstratified_split(x_R01, y_R01, x_R02, y_R02, x_R03, y_R03)
 
+  print(x_train.shape, y_train.shape)
+  print(x_valid.shape, y_valid.shape)
+  print(x_test.shape, y_test.shape)
 
-  for z1 in range(no_cluster):
-    #############################
-    ###~~~ 70% Training DS ~~~###
-    #############################
-    #REGION >>>1
-    x_t1, x_v1, y_t1, y_v1 = train_test_split(R_1_original[z1], R_1_labels[z1], train_size= 0.7, test_size= 0.3)
-    x_tr_R01.append(x_t1) # 70% Data
-    x_v_R01.append(x_v1)
-    y_tr_R01.append(y_t1) # 70% Labels
-    y_v_R01.append(y_v1)
+  return x_train, y_train, x_valid, y_valid, x_test, y_test
+  
+#Stratified split
+def stratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
 
-    #REGION >>>2
-    x_t2, x_v2, y_t2, y_v2 = train_test_split(R_2_original[z1], R_2_labels[z1], train_size= 0.7, test_size= 0.3)
-    x_tr_R02.append(x_t2) # 70% Data
-    x_v_R02.append(x_v2)
-    y_tr_R02.append(y_t2) # 70% Labels
-    y_v_R02.append(y_v2)
-    
-    #REGION >>>3
-    x_t3, x_v3, y_t3, y_v3 = train_test_split(R_3_original[z1], R_3_labels[z1], train_size= 0.7, test_size= 0.3)
-    x_tr_R03.append(x_t3) # 70% Data
-    x_v_R03.append(x_v3)
-    y_tr_R03.append(y_t3) # 70% Labels
-    y_v_R03.append(y_v3)
+  x_train01, x01, y_train01, y01 = train_test_split(x_Region01, y_Region01, train_size= 0.7, test_size= 0.3, stratify = y_Region01)
+  x_valid01, x_test01, y_valid01, y_test01 = train_test_split(x01, y01, train_size= 2/3, test_size= 1/3, stratify = y01)
 
-  #>>> 70% (Train) of Region 1 + Region 2 + Region 3
-  x_tr, y_tr = [], []
-  for x in range(no_cluster):
-    x_tr.extend(x_tr_R01[x])
-    y_tr.extend(y_tr_R01[x])
-    x_tr.extend(x_tr_R02[x])
-    y_tr.extend(y_tr_R02[x])
-    x_tr.extend(x_tr_R03[x])
-    y_tr.extend(y_tr_R03[x])
+  x_train02, x02, y_train02, y02 = train_test_split(x_Region02, y_Region02, train_size= 0.7, test_size= 0.3, stratify = y_Region02)
+  x_valid02, x_test02, y_valid02, y_test02 = train_test_split(x02, y02, train_size= 2/3, test_size= 1/3, stratify = y02)
 
-  x_tr = np.array(x_tr)
-  y_tr = np.array(y_tr)
+  x_train03, x03, y_train03, y03 = train_test_split(x_Region03, y_Region03, train_size= 0.7, test_size= 0.3, stratify = y_R03)
+  x_valid03, x_test03, y_valid03, y_test03 = train_test_split(x03, y03, train_size= 2/3, test_size= 1/3, stratify = y03)
 
-  #############################################
-  ###~~~ 20% Validation DS & 10% Test DS ~~~###
-  #############################################
+  x_train = np.vstack((x_train01, x_train02, x_train03))
+  y_train = np.concatenate((y_train01, y_train02, y_train03))
+  x_valid = np.vstack((x_valid01, x_valid02, x_valid03))
+  y_valid = np.concatenate((y_valid01, y_valid02, y_valid03))
+  x_test = np.vstack((x_test01, x_test02, x_test03))
+  y_test = np.concatenate((y_test01, y_test02, y_test03))
 
-  x_v, y_v = [], []
-  for x in range(no_cluster):
-    x_v.extend(x_v_R01[x])
-    y_v.extend(y_v_R01[x])
-    x_v.extend(x_v_R02[x])
-    y_v.extend(y_v_R02[x])
-    x_v.extend(x_v_R03[x])
-    y_v.extend(y_v_R03[x])
+  return x_train, y_train, x_valid, y_valid, x_test, y_test
+  
+#Unstratified split
+def unstratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
 
-  x_v = np.array(x_v)
-  y_v = np.array(y_v)
+  x_train01, x01, y_train01, y01 = train_test_split(x_Region01, y_Region01, train_size= 0.7, test_size= 0.3)
+  x_valid01, x_test01, y_valid01, y_test01 = train_test_split(x01, y01, train_size= 2/3, test_size= 1/3)
 
+  x_train02, x02, y_train02, y02 = train_test_split(x_Region02, y_Region02, train_size= 0.7, test_size= 0.3)
+  x_valid02, x_test02, y_valid02, y_test02 = train_test_split(x02, y02, train_size= 2/3, test_size= 1/3)
 
-  #>>> 20% (Valid) & 10% (Train) of Region 1
-  x_va, x_te, y_va, y_te = train_test_split(x_v, y_v, train_size= 2/3, test_size= 1/3)
+  x_train03, x03, y_train03, y03 = train_test_split(x_Region03, y_Region03, train_size= 0.7, test_size= 0.3)
+  x_valid03, x_test03, y_valid03, y_test03 = train_test_split(x03, y03, train_size= 2/3, test_size= 1/3)
 
-  return x_tr, y_tr, x_va, y_va, x_te, y_te
+  x_train = np.vstack((x_train01, x_train02, x_train03))
+  y_train = np.concatenate((y_train01, y_train02, y_train03))
+  x_valid = np.vstack((x_valid01, x_valid02, x_valid03))
+  y_valid = np.concatenate((y_valid01, y_valid02, y_valid03))
+  x_test = np.vstack((x_test01, x_test02, x_test03))
+  y_test = np.concatenate((y_test01, y_test02, y_test03))
+
+  return x_train, y_train, x_valid, y_valid, x_test, y_test
 
 # >>> VGG FUNCTION <<< #
 def prepareDataset (DS):
