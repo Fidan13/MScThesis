@@ -50,9 +50,8 @@ all_exp = {
 
 # List of functions:::
 
-#Listing all experiments
-
 def print_exps(groups):
+  '''Listing all experiments'''
   print('\t\t\tAvg\tSub-Avg\tRare')
   print('--------------------------------------------')
   for group in groups:
@@ -62,12 +61,34 @@ def print_exps(groups):
       print(f'Experiment: {exp}>\t\t{this_group[exp][0]}\t{this_group[exp][1]}\t{this_group[exp][2]}')
     print('--------------------------------------------')
     
-#Choosing group and experiment
-
 def exp_details(exps):
+  '''Choosing group and experiment'''
   print_exps(exps)
+  train, valid, test = None, None, None
+  avg, sub, rare = None, None, None
+  stratify = None
   g_idx = input('Enter group No.')
   exp_idx = input('Enter exp No.')
+  
+  if g_idx == '0' and exp_idx == '0':
+    print('This is a Ground Truth Experiment')
+    return g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
+  
+  [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
+  if g_idx == '6':
+    if exp_idx == '16':
+      train, valid, test = 'sub-avg', 'rare', 'avg'
+    elif exp_idx == '17':
+      train, valid, test = 'rare', 'sub-avg', 'avg'
+    elif exp_idx == '18':
+      train, valid, test = 'avg', 'sub-avg', 'rare'
+    elif exp_idx == '19':
+      train, valid, test = 'avg', 'rare', 'sub-avg'
+    else:
+      print('Warning: Please choose one of these experiments (16, 17, 18 or 19)')
+    print(f'Model will be trained on {train} validated on {valid} and tested on {test}')
+    return g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
+   
   stratify = input('Data split is stratified (Y/N)')
   if stratify.lower() == 'y':
     stratify = True
@@ -76,18 +97,14 @@ def exp_details(exps):
     stratify = False
     strat = 'not stratified'
 
-  if g_idx == '0' and exp_idx == '0':
-    print('This is a Ground Truth Experiment')
-  else:
-    [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
-    print(f'for Group {g_idx} Experiment {exp_idx} split as the following:')
-    print('Avg\tSub-Avg\tRare')
-    print(f'{avg}\t{sub}\t{rare}')
+  print(f'for Group {g_idx} Experiment {exp_idx} split as the following:')
+  print('Avg\tSub-Avg\tRare')
+  print(f'{avg}\t{sub}\t{rare}')
   print(f'the data spliting is {strat}')
   return g_idx, exp_idx, avg, sub, rare, stratify
 
-# Cluster details >>> No. of clusters, No. of Points in each cluster
 def clusters_det(hdb_labels):
+  '''Cluster details >>> No. of clusters, No. of Points in each cluster'''
   m = 0
   no_of_clusters = 0
   for i in range(10):
@@ -101,8 +118,8 @@ def clusters_det(hdb_labels):
 
   return no_of_clusters
 
-# Clusters Embedding
 def embedding_1D(no_cluster, data, hdb_labels, y_labels, p_out = True):
+  '''Clusters Embedding'''
   cluster_list = list() #Creat a list contains all clusters after Embedding
   label_list = list() #Creat a list contains all labels after Embedding
   original_image_list = list() #Original Images List
@@ -117,6 +134,7 @@ def embedding_1D(no_cluster, data, hdb_labels, y_labels, p_out = True):
   return cluster_list, label_list, original_image_list
 
 def exp_regions(avg, sub, rare, p_out = True):
+  '''define regions'''
   if avg<=0 or sub<=0 or rare<=0:
     print('Regions Error = At least One Region is Negative')
     return None
@@ -136,8 +154,8 @@ def exp_regions(avg, sub, rare, p_out = True):
     print(f'Rare Region:\t{R[2]}-{1} & {0}-{R[3]}')
   return R
 
-# Data Splitting
 def split_data(n, avg, sub, rare, cluster_list, y_list, original_list, p_out = True):
+  '''Data Splitting'''
   #creat seperate lists for splitted datasets
   R_1, R_2, R_3 = [[] for i in range(n)], [[] for i in range(n)], [[] for i in range(n)] #creat a list contains all Region 1 datasets
   R_1_labels, R_2_labels, R_3_labels = [[] for i in range(n)], [[] for i in range(n)], [[] for i in range(n)] #creat a list contains all Region 1 labels
@@ -196,8 +214,8 @@ def split_data(n, avg, sub, rare, cluster_list, y_list, original_list, p_out = T
 
   return R_1, R_2, R_3, R_1_labels, R_2_labels, R_3_labels, R_1_original, R_2_original, R_3_original
 
-#Plotting splitted Datasets
 def show_split(R_1, R_2, R_3, cluster_no):
+  '''Plotting splitted Datasets'''
   #Plotting splitted datasets (cluster regions) histograms without KDE, with Borders
   print("\n************************************************************************************************************\n")
   print(f">>>Cluster {cluster_no} Splitted datasets:::<<<\n")   
@@ -221,8 +239,8 @@ def show_split(R_1, R_2, R_3, cluster_no):
 
   return None
 
-#Data Preparation and Train, Test, Validate splitting for training
 def prepare_data(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, stratify = False):
+  '''Data Preparation and Train, Test, Validate splitting for training'''
   x_R01, y_R01 = [], []
   x_R02, y_R02 = [], []
   x_R03, y_R03 = [], []
@@ -245,9 +263,8 @@ def prepare_data(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels,
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
   
-#Stratified split
 def stratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
-
+  '''Stratified split'''
   x_train01, x01, y_train01, y01 = train_test_split(x_Region01, y_Region01, train_size= 0.7, test_size= 0.3, stratify = y_Region01)
   x_valid01, x_test01, y_valid01, y_test01 = train_test_split(x01, y01, train_size= 2/3, test_size= 1/3, stratify = y01)
 
@@ -266,9 +283,8 @@ def stratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03,
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
   
-#Unstratified split
 def unstratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
-
+  '''Unstratified split'''
   x_train01, x01, y_train01, y01 = train_test_split(x_Region01, y_Region01, train_size= 0.7, test_size= 0.3)
   x_valid01, x_test01, y_valid01, y_test01 = train_test_split(x01, y01, train_size= 2/3, test_size= 1/3)
 
@@ -286,9 +302,67 @@ def unstratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region0
   y_test = np.concatenate((y_test01, y_test02, y_test03))
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
+  
+def prepare_data_special(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, train = 'na', valid = 'na', test = 'na'):
+  '''Special Experiments Data Preparation and Train, Test, Validate splitting for training'''
+  x_R01, y_R01 = [], []
+  x_R02, y_R02 = [], []
+  x_R03, y_R03 = [], []
+  for z in range(no_cluster):
+    x_R01.extend(R_1_original[z])
+    y_R01.extend(R_1_labels[z])
+    x_R02.extend(R_2_original[z])
+    y_R02.extend(R_2_labels[z])
+    x_R03.extend(R_3_original[z])
+    y_R03.extend(R_3_labels[z])
+  
+  if train.lower() == 'avg':
+    x_train, y_train = np.array(x_R01), np.array(y_R01)
+    if valid.lower() == 'sub-avg' and test.lower() == 'rare':
+      x_valid, y_valid = np.array(x_R02), np.array(y_R02)
+      x_test, y_test = np.array(x_R03), np.array(y_R03)
+    elif valid.lower() == 'rare' and test.lower() == 'sub-avg':
+      x_valid, y_valid = np.array(x_R03), np.array(y_R03)
+      x_test, y_test = np.array(x_R02), np.array(y_R02)
+    else:
+      print('Error: Please specify the data groups correctly')
+      return
 
-# >>> VGG FUNCTION <<< #
+  elif train.lower() == 'sub-avg':
+    x_train, y_train = np.array(x_R02), np.array(y_R02)
+    if valid.lower() == 'avg' and test.lower() == 'rare':
+      x_valid, y_valid = np.array(x_R01), np.array(y_R01)
+      x_test, y_test = np.array(x_R03), np.array(y_R03)
+    elif valid.lower() == 'rare' and test.lower() == 'avg':
+      x_valid, y_valid = np.array(x_R03), np.array(y_R03)
+      x_test, y_test = np.array(x_R01), np.array(y_R01)
+    else:
+      print('Error: Please specify the data groups correctly')
+      return
+
+  elif train.lower() == 'rare':
+    x_train, y_train = np.array(x_R03), np.array(y_R03)
+    if valid.lower() == 'avg' and test.lower() == 'sub-avg':
+      x_valid, y_valid = np.array(x_R01), np.array(y_R01)
+      x_test, y_test = np.array(x_R02), np.array(y_R02)
+    elif valid.lower() == 'sub-avg' and test.lower() == 'avg':
+      x_valid, y_valid = np.array(x_R02), np.array(y_R02)
+      x_test, y_test = np.array(x_R01), np.array(y_R01)
+    else:
+      print('Error: Please specify the data groups correctly')
+      return
+  else:
+    print('Error: Please specify the data groups correctly')
+    return
+  
+  print(x_train.shape, y_train.shape)
+  print(x_valid.shape, y_valid.shape)
+  print(x_test.shape, y_test.shape)
+
+  return x_train, y_train, x_valid, y_valid, x_test, y_test
+
 def prepareDataset (DS):
+  '''>>> VGG FUNCTION <<<'''
   DS = np.dstack([DS] * 3)
   DS = DS.reshape(-1, 28,28,3)
   DS = np.asarray([img_to_array(array_to_img(im, scale=False).resize((48,48))) for im in DS])
