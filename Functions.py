@@ -144,11 +144,11 @@ def create_dir(DataSet = str(), ModelName = str(), group_idx = str(), exp_idx = 
     run_bash('cd {exp_path}')
     print('Experiment Directory is available')
   elif not exp_path.exists():
-    run_bash('cd {group_path}')
+    run_bash('cd "group_path"')
     print('Group Directory is available')
-    run_bash('mkdir $exp_folder')
+    run_bash('mkdir "exp_folder"')
     print('Experiment Directory is created')
-    run_bash('(cd {exp_path}')
+    run_bash('(cd "exp_path"')
     print('Experiment Directory is available')
   else:
     run_bash('cd {exp_path}')
