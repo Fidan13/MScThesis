@@ -152,7 +152,7 @@ def create_dir(DataSet = str(), ModelName = str(), group_idx = str(), exp_idx = 
     print('Experiment Directory is available')
   else:
     run_bash('cd {exp_path}')
-    print('Experiment Directory is available'.encode(encoding=’utf-8′))
+    print('Experiment Directory is available'.encode(encoding='utf-8')
     
 def run_bash(script):
   '''Run bash in python'''
