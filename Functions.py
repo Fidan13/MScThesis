@@ -114,52 +114,52 @@ def stratified():
     strat = 'not stratified'
   return strat, stratify
   
-def create_dir(DataSet = str(), ModelName = str(), group_idx = str(), exp_idx = str(), stratify = None):
-  '''Create required directories for the experiment in Google Colab'''
-
-  if stratify:
-    st_path = '_withLables'
-  else:
-    st_path = ''
-
-  model_path = Path('/content/drive/My Drive/Thesis Notebooks/' + DataSet + '/' + ModelName)
-
-  group_folder = str('Group_' + group_idx)
-  exp_folder = str('Exp' + exp_idx + st_path)
-
-  group_path = Path(str(model_path) + '/' + group_folder)
-  exp_path = Path(str(group_path) + '/' + exp_folder)
-
-  if not model_path.exists():
-    print('Warning: Model Directory is not available')
-  elif not group_path.exists():
-    run_bash('cd {model_path}')
-    print('Model Directory is available')
-    run_bash('mkdir {group_folder}')
-    print('Group Directory is created')
-    run_bash('cd {group_path}')
-    print('Group Directory is available')
-    run_bash('mkdir {exp_folder}')
-    print('Experiment Directory is created')
-    run_bash('cd {exp_path}')
-    print('Experiment Directory is available')
-  elif not exp_path.exists():
-    run_bash('cd "group_path"')
-    print('Group Directory is available')
-    run_bash('mkdir "exp_folder"')
-    print('Experiment Directory is created')
-    run_bash('(cd "exp_path"')
-    print('Experiment Directory is available')
-  else:
-    run_bash('cd {exp_path}')
-    print('Experiment Directory is available')
+#def create_dir(DataSet = str(), ModelName = str(), group_idx = str(), exp_idx = str(), stratify = None):
+#  '''Create required directories for the experiment in Google Colab'''
+#
+#  if stratify:
+#    st_path = '_withLables'
+#  else:
+#    st_path = ''
+#
+#  model_path = Path('/content/drive/My Drive/Thesis Notebooks/' + DataSet + '/' + ModelName)
+#
+#  group_folder = str('Group_' + group_idx)
+#  exp_folder = str('Exp' + exp_idx + st_path)
+#
+#  group_path = Path(str(model_path) + '/' + group_folder)
+#  exp_path = Path(str(group_path) + '/' + exp_folder)
+#
+#  if not model_path.exists():
+#    print('Warning: Model Directory is not available')
+#  elif not group_path.exists():
+#    run_bash('cd {model_path}')
+#    print('Model Directory is available')
+#    run_bash('mkdir {group_folder}')
+#    print('Group Directory is created')
+#    run_bash('cd {group_path}')
+#    print('Group Directory is available')
+#    run_bash('mkdir {exp_folder}')
+#    print('Experiment Directory is created')
+#    run_bash('cd {exp_path}')
+#    print('Experiment Directory is available')
+#  elif not exp_path.exists():
+#    run_bash('cd "group_path"')
+#    print('Group Directory is available')
+#    run_bash('mkdir "exp_folder"')
+#    print('Experiment Directory is created')
+#    run_bash('(cd "exp_path"')
+#    print('Experiment Directory is available')
+#  else:
+#    run_bash('cd {exp_path}')
+#    print('Experiment Directory is available')
     
-def run_bash(script):
-  '''Run bash in python'''
-  with tempfile.NamedTemporaryFile() as scriptfile:
-    scriptfile.write(script.encode(encoding='utf-8'))
-    scriptfile.flush()
-    subprocess.call(['/bin/bash', scriptfile.name])
+#def run_bash(script):
+#  '''Run bash in python'''
+#  with tempfile.NamedTemporaryFile() as scriptfile:
+#    scriptfile.write(script.encode(encoding='utf-8'))
+#    scriptfile.flush()
+#    subprocess.call(['/bin/bash', scriptfile.name])
 
 def clusters_det(hdb_labels):
   '''Cluster details >>> No. of clusters, No. of Points in each cluster'''
