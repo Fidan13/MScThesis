@@ -129,10 +129,6 @@ def create_dir(DataSet = str(), ModelName = str(), group_idx = str(), exp_idx = 
 
   group_path = Path(str(model_path) + '/' + group_folder)
   exp_path = Path(str(group_path) + '/' + exp_folder)
-  
-  print(model_path, type(model_path))
-  print(group_path, type(group_path))
-  print(exp_path, type(exp_path))
 
   if not model_path.exists():
     print('Warning: Model Directory is not available')
@@ -156,7 +152,7 @@ def create_dir(DataSet = str(), ModelName = str(), group_idx = str(), exp_idx = 
     print('Experiment Directory is available')
   else:
     run_bash('cd {exp_path}')
-    print('Experiment Directory is available')
+    print('Experiment Directory is available'.encode(encoding=’utf-8′))
     
 def run_bash(script):
   '''Run bash in python'''
