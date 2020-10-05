@@ -1,3 +1,4 @@
+from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -110,6 +111,46 @@ def stratified():
     stratify = False
     strat = 'not stratified'
   return strat, stratify
+  
+def create_dir(DataSet, ModelName, group_idx, exp_idx, stratify):
+  '''Create required directories for the experiment in Google Colab'''
+
+  if stratify:
+    st_path = '_withLables'
+  else:
+    st_path = ''
+
+  model_path = Path('/content/drive/My Drive/Thesis Notebooks/' + DataSet + '/' + ModelName)
+
+  group_folder = str('Group_' + group_idx)
+  exp_folder = str('Exp' + exp_idx + st_path)
+
+  group_path = Path(str(model_path) + '/' + group_folder)
+  exp_path = Path(str(group_path) + '/' + exp_folder)
+
+  if not model_path.exists():
+    print('Warning: Model Directory is not available')
+  elif not group_path.exists():
+    %cd {model_path}
+    print('Model Directory is available')
+    !mkdir {group_folder}
+    print('Group Directory is created')
+    %cd {group_path}
+    print('Group Directory is available')
+    !mkdir {exp_folder}
+    print('Experiment Directory is created')
+    %cd {exp_path}
+    print('Experiment Directory is available')
+  elif not exp_path.exists():
+    %cd {group_path}
+    print('Group Directory is available')
+    !mkdir {exp_folder}
+    print('Experiment Directory is created')
+    %cd {exp_path}
+    print('Experiment Directory is available')
+  else:
+    %cd {exp_path}
+    print('Experiment Directory is available')
 
 def clusters_det(hdb_labels):
   '''Cluster details >>> No. of clusters, No. of Points in each cluster'''
