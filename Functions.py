@@ -131,25 +131,25 @@ def create_dir(DataSet, ModelName, group_idx, exp_idx, stratify):
   if not model_path.exists():
     print('Warning: Model Directory is not available')
   elif not group_path.exists():
-    %cd {model_path}
+    !cd {model_path}
     print('Model Directory is available')
     !mkdir {group_folder}
     print('Group Directory is created')
-    %cd {group_path}
+    !cd {group_path}
     print('Group Directory is available')
     !mkdir {exp_folder}
     print('Experiment Directory is created')
-    %cd {exp_path}
+    !cd {exp_path}
     print('Experiment Directory is available')
   elif not exp_path.exists():
-    %cd {group_path}
+    !cd {group_path}
     print('Group Directory is available')
     !mkdir {exp_folder}
     print('Experiment Directory is created')
-    %cd {exp_path}
+    !cd {exp_path}
     print('Experiment Directory is available')
   else:
-    %cd {exp_path}
+    !cd {exp_path}
     print('Experiment Directory is available')
 
 def clusters_det(hdb_labels):
