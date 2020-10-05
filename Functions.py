@@ -74,7 +74,7 @@ def exp_details(exps):
     g_idx = 'Ground Truth Exp'
     strat, stratify = stratified()
     print('This is a Ground Truth Experiment')
-    print('The data split is {strat}')
+    print(f'The data split is {strat}')
     return g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
   
   [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
