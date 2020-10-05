@@ -151,13 +151,13 @@ def create_dir(DataSet = str(), ModelName = str(), group_idx = str(), exp_idx = 
     run_bash('(cd {exp_path}')
     print('Experiment Directory is available')
   else:
-    run_bash('cd {exp_path}'.encode(encoding='utf-8'))
+    run_bash('cd {exp_path}')
     print('Experiment Directory is available')
     
 def run_bash(script):
   '''Run bash in python'''
   with tempfile.NamedTemporaryFile() as scriptfile:
-    scriptfile.write(script)
+    scriptfile.write(script.encode(encoding='utf-8'))
     scriptfile.flush()
     subprocess.call(['/bin/bash', scriptfile.name])
 
