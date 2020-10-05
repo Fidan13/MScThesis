@@ -114,7 +114,7 @@ def stratified():
     strat = 'not stratified'
   return strat, stratify
   
-def create_dir(DataSet, ModelName, group_idx, exp_idx, stratify):
+def create_dir(DataSet = str(), ModelName = str(), group_idx = str(), exp_idx = str(), stratify = None):
   '''Create required directories for the experiment in Google Colab'''
 
   if stratify:
