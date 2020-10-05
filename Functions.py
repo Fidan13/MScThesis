@@ -124,11 +124,15 @@ def create_dir(DataSet = str(), ModelName = str(), group_idx = str(), exp_idx = 
 
   model_path = Path('/content/drive/My Drive/Thesis Notebooks/' + DataSet + '/' + ModelName)
 
-  group_folder = 'Group_' + group_idx
-  exp_folder = 'Exp' + exp_idx + st_path
+  group_folder = str('Group_' + group_idx)
+  exp_folder = str('Exp' + exp_idx + st_path)
 
   group_path = Path(str(model_path) + '/' + group_folder)
   exp_path = Path(str(group_path) + '/' + exp_folder)
+  
+  print(model_path, type(model_path))
+  print(group_path, type(group_path))
+  print(exp_path, type(exp_path))
 
   if not model_path.exists():
     print('Warning: Model Directory is not available')
