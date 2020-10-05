@@ -1,4 +1,6 @@
 from pathlib import Path
+import tempfile
+import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -131,26 +133,33 @@ def create_dir(DataSet, ModelName, group_idx, exp_idx, stratify):
   if not model_path.exists():
     print('Warning: Model Directory is not available')
   elif not group_path.exists():
-    !cd {model_path}
+    run_bash('cd {model_path}')
     print('Model Directory is available')
-    !mkdir {group_folder}
+    run_bash('mkdir {group_folder}')
     print('Group Directory is created')
-    !cd {group_path}
+    run_bash('cd {group_path}')
     print('Group Directory is available')
-    !mkdir {exp_folder}
+    run_bash('mkdir {exp_folder}')
     print('Experiment Directory is created')
-    !cd {exp_path}
+    run_bash('cd {exp_path}')
     print('Experiment Directory is available')
   elif not exp_path.exists():
-    !cd {group_path}
+    run_bash('cd {group_path}')
     print('Group Directory is available')
-    !mkdir {exp_folder}
+    run_bash('mkdir {exp_folder}')
     print('Experiment Directory is created')
-    !cd {exp_path}
+    run_bash('(cd {exp_path}')
     print('Experiment Directory is available')
   else:
-    !cd {exp_path}
+    run_bash('cd {exp_path}')
     print('Experiment Directory is available')
+    
+def run_bash(script):
+  '''Run bash in python'''
+  with tempfile.NamedTemporaryFile() as scriptfile:
+    scriptfile.write(script)
+    scriptfile.flush()
+    subprocess.call(['/bin/bash', scriptfile.name])
 
 def clusters_det(hdb_labels):
   '''Cluster details >>> No. of clusters, No. of Points in each cluster'''
