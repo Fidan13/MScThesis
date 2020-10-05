@@ -71,7 +71,10 @@ def exp_details(exps):
   exp_idx = input('Enter exp No.')
   
   if g_idx == '0' and exp_idx == '0':
+    g_idx = 'Ground Truth Exp'
+    strat, stratify = stratified()
     print('This is a Ground Truth Experiment')
+    print('The data split is {strat}')
     return g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
   
   [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
@@ -89,6 +92,16 @@ def exp_details(exps):
     print(f'Model will be trained on {train} validated on {valid} and tested on {test}')
     return g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
    
+  strat, stratify = stratified()
+
+  print(f'for Group {g_idx} Experiment {exp_idx} split as the following:')
+  print('Avg\tSub-Avg\tRare')
+  print(f'{avg}\t{sub}\t{rare}')
+  print(f'the data spliting is {strat}')
+  return g_idx, exp_idx, avg, sub, rare, stratify
+  
+def stratified():
+  '''Check if data split stratified'''
   stratify = input('Data split is stratified (Y/N)')
   if stratify.lower() == 'y':
     stratify = True
@@ -96,12 +109,7 @@ def exp_details(exps):
   else:
     stratify = False
     strat = 'not stratified'
-
-  print(f'for Group {g_idx} Experiment {exp_idx} split as the following:')
-  print('Avg\tSub-Avg\tRare')
-  print(f'{avg}\t{sub}\t{rare}')
-  print(f'the data spliting is {strat}')
-  return g_idx, exp_idx, avg, sub, rare, stratify
+  return strat, stratify
 
 def clusters_det(hdb_labels):
   '''Cluster details >>> No. of clusters, No. of Points in each cluster'''
