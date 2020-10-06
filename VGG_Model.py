@@ -124,7 +124,7 @@ def trainVGG(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   print(f'Model training loss: {acc}')
   print(f'Model validation loss: {val_loss}')
   
-  return acc, val_acc, loss, val_loss, test_features_flat
+  return model, acc, val_acc, loss, val_loss, test_features_flat
   
 def noClass(DS):
   '''Define number of original classes in DS'''
