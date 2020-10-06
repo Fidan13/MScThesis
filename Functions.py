@@ -450,6 +450,6 @@ def prepareDataset(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
   Y_v = to_categorical(Y_valid)
   Y_te = to_categorical(Y_test)
   
-  Print('Data is ready')
+  print('Data is ready')
   
   return X_tr, Y_tr, X_v, Y_v, X_te, Y_te
