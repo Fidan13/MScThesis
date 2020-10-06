@@ -20,13 +20,14 @@ from keras.layers.advanced_activations import LeakyReLU
 
 
 #Define VGG model training function
-def trainVGG(x_train, y_train, x_valid, y_valid, x_test, y_test):
+def trainVGG(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   # Define the parameters for instanitaing VGG16 model. 
   IMG_WIDTH = 48
   IMG_HEIGHT = 48
   IMG_DEPTH = 3
   BATCH_SIZE = 16
-  print('Parameters is defined')
+  no_of_class = noClass(DS)
+  print('Parameters are defined')
 
   # Preprocessing the input 
   x_train = preprocess_input(x_train)
@@ -122,6 +123,11 @@ def trainVGG(x_train, y_train, x_valid, y_valid, x_test, y_test):
   
   return acc, val_acc, loss, val_loss, test_features_flat
   
-  
+def noClass(DS):
+  '''Define number of original classes in DS'''
+  if (DS.lower() == 'mnist') or (DS.lower() == 'fashionmnist'):
+    no_class = 10
+    
+  return no_class
   
   
