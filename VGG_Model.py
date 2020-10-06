@@ -119,12 +119,13 @@ def trainVGG(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   loss = history.history['loss']
   val_loss = history.history['val_loss']
   
-  print(f'Model training accuracy: {acc}')
-  print(f'Model validation accuracy: {val_loss}')
-  print(f'Model training loss: {acc}')
-  print(f'Model validation loss: {val_loss}')
+  print('')
+  print(f'Model training accuracy: {acc[-1]}')
+  print(f'Model validation accuracy: {val_loss[-1]}')
+  print(f'Model training loss: {acc[-1]}')
+  print(f'Model validation loss: {val_loss[-1]}')
   
-  return model, acc, val_acc, loss, val_loss, test_features_flat
+  return model, history, acc, val_acc, loss, val_loss, test_features_flat
   
 def noClass(DS):
   '''Define number of original classes in DS'''
