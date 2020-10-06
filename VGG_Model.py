@@ -18,6 +18,8 @@ from keras import optimizers
 from keras import callbacks
 from keras.layers.advanced_activations import LeakyReLU
 
+import numpy as np
+
 
 #Define VGG model training function
 def trainVGG(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
