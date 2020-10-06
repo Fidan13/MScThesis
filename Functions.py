@@ -10,6 +10,7 @@ import umap
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
 from keras.preprocessing.image import ImageDataGenerator, img_to_array, array_to_img
+from keras.utils import to_categorical
 
 # All groups & experiments
 # Group:{Exp:[Avg, Sub-avg, Rare]}
@@ -53,7 +54,7 @@ all_exp = {
 
 # List of functions:::
 
-def print_exps(groups):
+def printExps(groups):
   '''Listing all experiments'''
   print('\t\t\tAvg\tSub-Avg\tRare')
   print('--------------------------------------------')
@@ -64,9 +65,9 @@ def print_exps(groups):
       print(f'Experiment: {exp}>\t\t{this_group[exp][0]}\t{this_group[exp][1]}\t{this_group[exp][2]}')
     print('--------------------------------------------')
     
-def exp_details(exps):
+def expDetails(exps):
   '''Choosing group and experiment'''
-  print_exps(exps)
+  printExps(exps)
   train, valid, test = None, None, None
   avg, sub, rare = None, None, None
   stratify = None
@@ -161,7 +162,7 @@ def stratified():
 #    scriptfile.flush()
 #    subprocess.call(['/bin/bash', scriptfile.name])
 
-def clusters_det(hdb_labels):
+def clustersDet(hdb_labels):
   '''Cluster details >>> No. of clusters, No. of Points in each cluster'''
   m = 0
   no_of_clusters = 0
@@ -176,7 +177,7 @@ def clusters_det(hdb_labels):
 
   return no_of_clusters
 
-def embedding_1D(no_cluster, data, hdb_labels, y_labels, p_out = True):
+def embedding1D(no_cluster, data, hdb_labels, y_labels, p_out = True):
   '''Clusters Embedding'''
   cluster_list = list() #Creat a list contains all clusters after Embedding
   label_list = list() #Creat a list contains all labels after Embedding
@@ -191,7 +192,7 @@ def embedding_1D(no_cluster, data, hdb_labels, y_labels, p_out = True):
 
   return cluster_list, label_list, original_image_list
 
-def exp_regions(avg, sub, rare, p_out = True):
+def expRegions(avg, sub, rare, p_out = True):
   '''define regions'''
   if avg<=0 or sub<=0 or rare<=0:
     print('Regions Error = At least One Region is Negative')
@@ -212,7 +213,7 @@ def exp_regions(avg, sub, rare, p_out = True):
     print(f'Rare Region:\t{R[2]}-{1} & {0}-{R[3]}')
   return R
 
-def split_data(n, avg, sub, rare, cluster_list, y_list, original_list, p_out = True):
+def splitData(n, avg, sub, rare, cluster_list, y_list, original_list, p_out = True):
   '''Data Splitting'''
   #creat seperate lists for splitted datasets
   R_1, R_2, R_3 = [[] for i in range(n)], [[] for i in range(n)], [[] for i in range(n)] #creat a list contains all Region 1 datasets
@@ -221,7 +222,7 @@ def split_data(n, avg, sub, rare, cluster_list, y_list, original_list, p_out = T
   
   # Regions / Quantile Limits
   # Regions Limitis:
-  regions_perc = exp_regions(avg, sub, rare)
+  regions_perc = expRegions(avg, sub, rare)
   R1_high = regions_perc[0]
   R1_low = regions_perc[1]
   R2_high = regions_perc[2]
@@ -272,7 +273,7 @@ def split_data(n, avg, sub, rare, cluster_list, y_list, original_list, p_out = T
 
   return R_1, R_2, R_3, R_1_labels, R_2_labels, R_3_labels, R_1_original, R_2_original, R_3_original
 
-def show_split(R_1, R_2, R_3, cluster_no):
+def showSplit(R_1, R_2, R_3, cluster_no):
   '''Plotting splitted Datasets'''
   #Plotting splitted datasets (cluster regions) histograms without KDE, with Borders
   print("\n************************************************************************************************************\n")
@@ -297,7 +298,7 @@ def show_split(R_1, R_2, R_3, cluster_no):
 
   return None
 
-def prepare_data(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, stratify = False):
+def prepareData(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, stratify = False):
   '''Data Preparation and Train, Test, Validate splitting for training'''
   x_R01, y_R01 = [], []
   x_R02, y_R02 = [], []
@@ -311,17 +312,19 @@ def prepare_data(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels,
     y_R03.extend(R_3_labels[z])
   
   if stratify:
-    x_train, y_train, x_valid, y_valid, x_test, y_test = stratified_split(x_R01, y_R01, x_R02, y_R02, x_R03, y_R03)
+    x_train, y_train, x_valid, y_valid, x_test, y_test = stratifiedSplit(x_R01, y_R01, x_R02, y_R02, x_R03, y_R03)
   else:
-    x_train, y_train, x_valid, y_valid, x_test, y_test = unstratified_split(x_R01, y_R01, x_R02, y_R02, x_R03, y_R03)
+    x_train, y_train, x_valid, y_valid, x_test, y_test = unstratifiedSplit(x_R01, y_R01, x_R02, y_R02, x_R03, y_R03)
 
   print(x_train.shape, y_train.shape)
   print(x_valid.shape, y_valid.shape)
   print(x_test.shape, y_test.shape)
+  
+  x_train, y_train, x_valid, y_valid, x_test, y_test = prepareDataset(x_train, y_train, x_valid, y_valid, x_test, y_test)
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
   
-def stratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
+def stratifiedSplit(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
   '''Stratified split'''
   x_train01, x01, y_train01, y01 = train_test_split(x_Region01, y_Region01, train_size= 0.7, test_size= 0.3, stratify = y_Region01)
   x_valid01, x_test01, y_valid01, y_test01 = train_test_split(x01, y01, train_size= 2/3, test_size= 1/3, stratify = y01)
@@ -341,7 +344,7 @@ def stratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03,
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
   
-def unstratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
+def unstratifiedSplit(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
   '''Unstratified split'''
   x_train01, x01, y_train01, y01 = train_test_split(x_Region01, y_Region01, train_size= 0.7, test_size= 0.3)
   x_valid01, x_test01, y_valid01, y_test01 = train_test_split(x01, y01, train_size= 2/3, test_size= 1/3)
@@ -361,7 +364,7 @@ def unstratified_split(x_Region01, y_Region01, x_Region02, y_Region02, x_Region0
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
   
-def prepare_data_special(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, train = 'na', valid = 'na', test = 'na'):
+def prepareDataSpecial(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, train = 'na', valid = 'na', test = 'na'):
   '''Special Experiments Data Preparation and Train, Test, Validate splitting for training'''
   x_R01, y_R01 = [], []
   x_R02, y_R02 = [], []
@@ -416,14 +419,37 @@ def prepare_data_special(no_cluster, R_1_original, R_1_labels, R_2_original, R_2
   print(x_train.shape, y_train.shape)
   print(x_valid.shape, y_valid.shape)
   print(x_test.shape, y_test.shape)
+  
+  x_train, y_train, x_valid, y_valid, x_test, y_test = prepareDataset(x_train, y_train, x_valid, y_valid, x_test, y_test)
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
 
-def prepareDataset (DS):
-  '''>>> VGG FUNCTION <<<'''
+def prepareDatasetX (DS):
+  '''>>> VGG FUNCTION <<<
+      Preparing X Data'''
+      
   DS = np.dstack([DS] * 3)
   DS = DS.reshape(-1, 28,28,3)
   DS = np.asarray([img_to_array(array_to_img(im, scale=False).resize((48,48))) for im in DS])
   DS = DS / 255.
   DS = DS.astype('float32')
+  
   return DS
+  
+def prepareDataset(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
+  '''>>> VGG FUNCTION <<<
+      Preparing X & Y Data'''
+
+  print('Preparing X Data')
+  X_tr = prepareDatasetX(X_train)
+  X_v = prepareDatasetX(X_valid)
+  X_te = prepareDatasetX(X_test)
+
+  print('Preparing Y Data')
+  Y_tr = to_categorical(Y_train)
+  Y_v = to_categorical(Y_valid)
+  Y_te = to_categorical(Y_test)
+  
+  Print('Data is ready')
+  
+  return X_tr, Y_tr, X_v, Y_v, X_te, Y_te
