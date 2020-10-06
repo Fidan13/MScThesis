@@ -15,7 +15,7 @@ from keras import models
 from keras.models import Model
 from keras import layers
 from keras import optimizers
-from keras import callbacks
+#from keras import callbacks
 from keras.layers.advanced_activations import LeakyReLU
 
 import numpy as np
@@ -81,6 +81,7 @@ def trainVGG(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   
   print('Model is compiled')
   
+  from keras import callbacks
   #Define callbacks
   reduce_learning = callbacks.ReduceLROnPlateau(
     monitor='val_loss',
