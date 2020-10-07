@@ -10,7 +10,6 @@ import umap
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
 from keras.preprocessing.image import ImageDataGenerator, img_to_array, array_to_img
-from keras.utils import to_categorical
 
 # All groups & experiments
 # Group:{Exp:[Avg, Sub-avg, Rare]}
@@ -422,6 +421,28 @@ def prepareDataSpecial(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_l
   
   x_train, y_train, x_valid, y_valid, x_test, y_test = prepareDataset(x_train, y_train, x_valid, y_valid, x_test, y_test)
 
+  return x_train, y_train, x_valid, y_valid, x_test, y_test
+
+def prepareDataGT(X, Y, startify):
+  '''Prepare Data for Ground Truth Experiments'''
+  Y_st = None
+  
+  if startify:
+    Y_st = Y
+  
+  x_train, x, y_train, y = train_test_split(X, Y, train_size= 0.7, test_size= 0.3, stratify = Y_st)
+  
+  if startify:
+    Y_st = y
+    
+  x_valid, x_test, y_valid, y_test = train_test_split(x, y, train_size= 2/3, test_size= 1/3, stratify = Y_st)
+  
+  print(x_train.shape, y_train.shape)
+  print(x_valid.shape, y_valid.shape)
+  print(x_test.shape, y_test.shape)
+  
+  x_train, y_train, x_valid, y_valid, x_test, y_test = prepareDataset(x_train, y_train, x_valid, y_valid, x_test, y_test)
+  
   return x_train, y_train, x_valid, y_valid, x_test, y_test
 
 def prepareDatasetX (DS):
