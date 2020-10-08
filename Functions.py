@@ -116,7 +116,7 @@ def expDetails(exps):
   print('Avg\tSub-Avg\tRare')
   print(f'{avg}\t{sub}\t{rare}')
   print(f'the data spliting is {strat}')
-  return ds, model, g_idx, exp_idx, avg, sub, rare, stratify
+  return ds, model, g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
   
 def stratified():
   '''Check if data split stratified'''
