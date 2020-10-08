@@ -72,6 +72,21 @@ def expDetails(exps):
   stratify = None
   g_idx = input('Enter group No.')
   exp_idx = input('Enter exp No.')
+  ds = input('(1) MNIST\n(2)FashionMNIST')
+  model = input('(1)VGG\n(2)XGBoost')
+  
+  if ds == '1':
+    ds = 'MNIST'
+  elif ds == '2':
+    ds = 'FashionMNIST'
+  
+  if model == '1':
+    model = 'VGG'
+  elif model == '2':
+    model = 'XGBoost'
+  
+  print('DATASET is:\t', ds)
+  print('MODEL is:\t', model)
   
   if g_idx == '0' and exp_idx == '0':
     g_idx = 'Ground Truth Exp'
@@ -93,7 +108,7 @@ def expDetails(exps):
     else:
       print('Warning: Please choose one of these experiments (16, 17, 18 or 19)')
     print(f'Model will be trained on {train} validated on {valid} and tested on {test}')
-    return g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
+    return ds, model, g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
    
   strat, stratify = stratified()
 
