@@ -93,7 +93,7 @@ def expDetails(exps):
     strat, stratify = stratified()
     print('This is a Ground Truth Experiment')
     print(f'The data split is {strat}')
-    return g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
+    return ds, model, g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
   
   [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
   if g_idx == '6':
@@ -116,7 +116,7 @@ def expDetails(exps):
   print('Avg\tSub-Avg\tRare')
   print(f'{avg}\t{sub}\t{rare}')
   print(f'the data spliting is {strat}')
-  return g_idx, exp_idx, avg, sub, rare, stratify
+  return ds, model, g_idx, exp_idx, avg, sub, rare, stratify
   
 def stratified():
   '''Check if data split stratified'''
