@@ -438,19 +438,14 @@ def prepareDataSpecial(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_l
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
 
-def prepareDataGT(X, Y, startify):
+def prepareDataGT(x_data, x_test, y_data, y_test, startify=None):
   '''Prepare Data for Ground Truth Experiments'''
   Y_st = None
   
   if startify:
-    Y_st = Y
+    Y_st = y_data
   
-  x_train, x, y_train, y = train_test_split(X, Y, train_size= 0.7, test_size= 0.3, stratify = Y_st)
-  
-  if startify:
-    Y_st = y
-    
-  x_valid, x_test, y_valid, y_test = train_test_split(x, y, train_size= 2/3, test_size= 1/3, stratify = Y_st)
+  x_train, x_valid, y_train, y_valid = train_test_split(x_data, y_data, train_size= 0.7, test_size= 0.3, stratify = Y_st)
   
   print(x_train.shape, y_train.shape)
   print(x_valid.shape, y_valid.shape)
