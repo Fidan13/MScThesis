@@ -1,5 +1,8 @@
 import os, time, datetime
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, hamming_loss, precision_recall_fscore_support
+import numpy as np
+
 import keras
 from keras.utils import to_categorical
 from keras.models import Sequential
@@ -9,8 +12,6 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.preprocessing.image import ImageDataGenerator, img_to_array, array_to_img
 from keras.applications import VGG16;
 from keras.applications.vgg16 import preprocess_input
-
-
 from keras import models
 from keras.models import Model
 from keras import layers
@@ -18,11 +19,12 @@ from keras import optimizers
 #from keras import callbacks
 from keras.layers.advanced_activations import LeakyReLU
 
-import numpy as np
+
 
 
 #Define VGG model training function
 def trainVGG(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
+  '''Build and Train (pretrained) VGG16 Model'''
   # Define the parameters for instanitaing VGG16 model. 
   IMG_WIDTH = 48
   IMG_HEIGHT = 48
@@ -125,7 +127,12 @@ def trainVGG(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   print(f'Model training loss: {acc[-1]}')
   print(f'Model validation loss: {val_loss[-1]}')
   
-  return model, history, acc, val_acc, loss, val_loss, test_features_flat
+  test_acc, test_precision, test_recall, test_fscore, hamming_loss = modelPerformance(model, test_features)
+  
+  results = {'train':[acc, val_acc, loss, val_loss],\
+             'test':[test_acc, test_precision, test_recall, test_fscore, hamming_loss]}
+  
+  return model, history, results
   
 def noClass(DS):
   '''Define number of original classes in DS'''
@@ -134,4 +141,19 @@ def noClass(DS):
     
   return no_class
   
+def modelPerformance(model, test_features):
+  '''Measure Model Performance'''
+  #Predict
+  y_pred = model.predict(test_features)
   
+  test_acc = accuracy_score(y_test_X, y_pred.round(), normalize=True, sample_weight=None)  
+  test_precision, test_recall, test_fscore = precision_recall_fscore_support(y_test_X, y_pred.round(), average='weighted')
+  hamming_loss = hamming_loss(y_test_X, y_pred.round())
+  
+  print('*********************************************')
+  print(f'Model testing accuracy: {test_acc}')
+  print(f'Model testing precision: {test_precision}')
+  print(f'Model testing recall: {test_recall}')
+  print(f'Model testing hamming loss: {hamming_loss}')
+  
+  return test_acc, test_precision, test_recall, test_fscore, hamming_loss
