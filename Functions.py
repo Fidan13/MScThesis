@@ -70,10 +70,10 @@ def expDetails(exps):
   train, valid, test = None, None, None
   avg, sub, rare = None, None, None
   stratify = None
-  g_idx = input('Enter group No.')
-  exp_idx = input('Enter exp No.')
-  ds = input('(1) MNIST\n(2)FashionMNIST')
-  model = input('(1)VGG\n(2)XGBoost')
+  g_idx = input('Enter group No.\t')
+  exp_idx = input('Enter exp No.\t')
+  ds = input('(1) MNIST\n(2)FashionMNIST\n')
+  model = input('(1)VGG\n(2)XGBoost\n')
   
   if ds == '1':
     ds = 'MNIST'
