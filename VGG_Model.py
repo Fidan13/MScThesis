@@ -127,7 +127,7 @@ def trainVGG(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   print(f'Model training loss: {acc[-1]}')
   print(f'Model validation loss: {val_loss[-1]}')
   
-  test_acc, test_precision, test_recall, test_fscore, hamming_loss = modelPerformance(model, test_features, y_test)
+  test_acc, test_precision, test_recall, test_fscore, hamming_loss = modelPerformance(model, test_features_flat, y_test)
   
   results = {'train':[acc, val_acc, loss, val_loss],\
              'test':[test_acc, test_precision, test_recall, test_fscore, hamming_loss]}
@@ -141,14 +141,14 @@ def noClass(DS):
     
   return no_class
   
-def modelPerformance(model, test_features, y_test):
+def modelPerformance(model, features, labels):
   '''Measure Model Performance'''
   #Predict
-  y_pred = model.predict(test_features)
+  y_pred = model.predict(features)
   
-  test_acc = accuracy_score(y_test, y_pred.round(), normalize=True, sample_weight=None)  
-  test_precision, test_recall, test_fscore = precision_recall_fscore_support(y_test, y_pred.round(), average='weighted')
-  hamming_loss = hamming_loss(y_test, y_pred.round())
+  test_acc = accuracy_score(labels, y_pred.round(), normalize=True, sample_weight=None)  
+  test_precision, test_recall, test_fscore, support = precision_recall_fscore_support(labels, y_pred.round(), average='weighted')
+  hamming = hamming_loss(labels, y_pred.round())
   
   print('*********************************************')
   print(f'Model testing accuracy: {test_acc}')
@@ -156,4 +156,4 @@ def modelPerformance(model, test_features, y_test):
   print(f'Model testing recall: {test_recall}')
   print(f'Model testing hamming loss: {hamming_loss}')
   
-  return test_acc, test_precision, test_recall, test_fscore, hamming_loss
+  return test_acc, test_precision, test_recall, test_fscore, hamming
