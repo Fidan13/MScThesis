@@ -154,6 +154,6 @@ def modelPerformance(model, features, labels):
   print(f'Model testing accuracy: {test_acc}')
   print(f'Model testing precision: {test_precision}')
   print(f'Model testing recall: {test_recall}')
-  print(f'Model testing hamming loss: {hamming_loss}')
+  print(f'Model testing hamming loss: {hamming}')
   
   return test_acc, test_precision, test_recall, test_fscore, hamming
