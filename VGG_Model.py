@@ -129,7 +129,7 @@ def trainVGG(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   
   test_acc, test_precision, test_recall, test_fscore, hamming_loss = modelPerformance(model, test_features_flat, y_test)
   
-  results = {'train':[acc, val_acc, loss, val_loss],\
+  results = {'train':[acc[-1], val_acc[-1], loss[-1], val_loss[-1]],\
              'test':[test_acc, test_precision, test_recall, test_fscore, hamming_loss]}
   
   return model, history, results
