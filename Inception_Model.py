@@ -3,6 +3,7 @@ import numpy as np
 
 #from __future__ import absolute_import, division, print_function
 
+from keras.utils import to_categorical
 from keras.applications.inception_v3 import InceptionV3
 from keras.preprocessing import image
 from keras.applications.inception_v3 import preprocess_input # New
