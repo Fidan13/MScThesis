@@ -396,7 +396,7 @@ def prepareDataSpecial(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_l
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
 
-def prepareDataGT(x_data, x_test, y_data, y_test, startify=None):
+def prepareDataGT(x_data, x_test, y_data, y_test, stratify=None):
   '''Prepare Data for Ground Truth Experiments'''
   
   Y_st = y_data if stratify else None
