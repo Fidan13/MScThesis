@@ -72,8 +72,8 @@ def expDetails(exps):
   stratify = None
   g_idx = input('Enter group No.\t')
   exp_idx = input('Enter exp No.\t')
-  ds = input('(1) MNIST\n(2)FashionMNIST\n')
-  model = input('(1)VGG16\n(2)InceptionV3\n')
+  ds = input('(1) MNIST\n(2) FashionMNIST\n')
+  model = input('(1) VGG16\n(2) InceptionV3\n')
   
   if ds == '1':
     ds = 'MNIST'
@@ -325,60 +325,34 @@ def prepareData(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, 
     x_R03.extend(R_3_original[z])
     y_R03.extend(R_3_labels[z])
   
-  if stratify:
-    x_train, y_train, x_valid, y_valid, x_test, y_test = stratifiedSplit(x_R01, y_R01, x_R02, y_R02, x_R03, y_R03)
-  else:
-    x_train, y_train, x_valid, y_valid, x_test, y_test = unstratifiedSplit(x_R01, y_R01, x_R02, y_R02, x_R03, y_R03)
+  x_train, y_train, x_valid, y_valid = TrainValidSplit(x_R01, y_R01, x_R02, y_R02, x_R03, y_R03, stratify)
 
   print(x_train.shape, y_train.shape)
   print(x_valid.shape, y_valid.shape)
   print(x_test.shape, y_test.shape)
-  
-  x_train, y_train, x_valid, y_valid, x_test, y_test = prepareDataset(x_train, y_train, x_valid, y_valid, x_test, y_test)
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
   
-def stratifiedSplit(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
-  '''Stratified split'''
-  x_train01, x01, y_train01, y01 = train_test_split(x_Region01, y_Region01, train_size= 0.7, test_size= 0.3, stratify = y_Region01)
-  x_valid01, x_test01, y_valid01, y_test01 = train_test_split(x01, y01, train_size= 2/3, test_size= 1/3, stratify = y01)
+def TrainValidSplit(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03, stratify):
+  '''Train & Valid data splitting'''
+  y_stratify = y_Region01 if stratify else None
+  x_train01, x_valid01, y_train01, y_valid0 = train_test_split(x_Region01, y_Region01, train_size= 0.7, test_size= 0.3, stratify = y_stratify)
 
-  x_train02, x02, y_train02, y02 = train_test_split(x_Region02, y_Region02, train_size= 0.7, test_size= 0.3, stratify = y_Region02)
-  x_valid02, x_test02, y_valid02, y_test02 = train_test_split(x02, y02, train_size= 2/3, test_size= 1/3, stratify = y02)
+  y_stratify = y_Region02 if stratify else None
+  x_train02, x_valid02, y_train02, y_valid02 = train_test_split(x_Region02, y_Region02, train_size= 0.7, test_size= 0.3, stratify = y_stratify)
 
-  x_train03, x03, y_train03, y03 = train_test_split(x_Region03, y_Region03, train_size= 0.7, test_size= 0.3, stratify = y_Region03)
-  x_valid03, x_test03, y_valid03, y_test03 = train_test_split(x03, y03, train_size= 2/3, test_size= 1/3, stratify = y03)
+  y_stratify = y_Region03 if stratify else None
+  x_train03, x_valid03, y_train03, y_valid03 = train_test_split(x_Region03, y_Region03, train_size= 0.7, test_size= 0.3, stratify = y_stratify)
 
   x_train = np.vstack((x_train01, x_train02, x_train03))
   y_train = np.concatenate((y_train01, y_train02, y_train03))
   x_valid = np.vstack((x_valid01, x_valid02, x_valid03))
   y_valid = np.concatenate((y_valid01, y_valid02, y_valid03))
-  x_test = np.vstack((x_test01, x_test02, x_test03))
-  y_test = np.concatenate((y_test01, y_test02, y_test03))
 
-  return x_train, y_train, x_valid, y_valid, x_test, y_test
+  return x_train, y_train, x_valid, y_valid
+
   
-def unstratifiedSplit(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, y_Region03):
-  '''Unstratified split'''
-  x_train01, x01, y_train01, y01 = train_test_split(x_Region01, y_Region01, train_size= 0.7, test_size= 0.3)
-  x_valid01, x_test01, y_valid01, y_test01 = train_test_split(x01, y01, train_size= 2/3, test_size= 1/3)
-
-  x_train02, x02, y_train02, y02 = train_test_split(x_Region02, y_Region02, train_size= 0.7, test_size= 0.3)
-  x_valid02, x_test02, y_valid02, y_test02 = train_test_split(x02, y02, train_size= 2/3, test_size= 1/3)
-
-  x_train03, x03, y_train03, y03 = train_test_split(x_Region03, y_Region03, train_size= 0.7, test_size= 0.3)
-  x_valid03, x_test03, y_valid03, y_test03 = train_test_split(x03, y03, train_size= 2/3, test_size= 1/3)
-
-  x_train = np.vstack((x_train01, x_train02, x_train03))
-  y_train = np.concatenate((y_train01, y_train02, y_train03))
-  x_valid = np.vstack((x_valid01, x_valid02, x_valid03))
-  y_valid = np.concatenate((y_valid01, y_valid02, y_valid03))
-  x_test = np.vstack((x_test01, x_test02, x_test03))
-  y_test = np.concatenate((y_test01, y_test02, y_test03))
-
-  return x_train, y_train, x_valid, y_valid, x_test, y_test
-  
-def prepareDataSpecial(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, train = 'na', valid = 'na', test = 'na'):
+def prepareDataSpecial(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, Xtest, Ytest, train = 'na'):
   '''Special Experiments Data Preparation and Train, Test, Validate splitting for training'''
   x_R01, y_R01 = [], []
   x_R02, y_R02 = [], []
@@ -391,59 +365,41 @@ def prepareDataSpecial(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_l
     x_R03.extend(R_3_original[z])
     y_R03.extend(R_3_labels[z])
   
+  x_R01, y_R01 = np.array(x_R01), np.array(y_R01)
+  x_R02, y_R02 = np.array(x_R02), np.array(y_R02)
+  x_R03, y_R03 = np.array(x_R03), np.array(y_R03)
+  
   if train.lower() == 'avg':
-    x_train, y_train = np.array(x_R01), np.array(y_R01)
-    if valid.lower() == 'sub-avg' and test.lower() == 'rare':
-      x_valid, y_valid = np.array(x_R02), np.array(y_R02)
-      x_test, y_test = np.array(x_R03), np.array(y_R03)
-    elif valid.lower() == 'rare' and test.lower() == 'sub-avg':
-      x_valid, y_valid = np.array(x_R03), np.array(y_R03)
-      x_test, y_test = np.array(x_R02), np.array(y_R02)
-    else:
-      print('Error: Please specify the data groups correctly')
-      return
-
+    x_train, y_train = x_R01, y_R01
+    x_valid = np.vstack((x_R02, x_R03))
+    y_valid = np.concatenate((y_R02, y_R03))  
   elif train.lower() == 'sub-avg':
-    x_train, y_train = np.array(x_R02), np.array(y_R02)
-    if valid.lower() == 'avg' and test.lower() == 'rare':
-      x_valid, y_valid = np.array(x_R01), np.array(y_R01)
-      x_test, y_test = np.array(x_R03), np.array(y_R03)
-    elif valid.lower() == 'rare' and test.lower() == 'avg':
-      x_valid, y_valid = np.array(x_R03), np.array(y_R03)
-      x_test, y_test = np.array(x_R01), np.array(y_R01)
-    else:
-      print('Error: Please specify the data groups correctly')
-      return
-
+    x_train, y_train = x_R02, y_R02
+    x_valid = np.vstack((x_R01, x_R03))
+    y_valid = np.concatenate((y_R01, y_R03)) 
   elif train.lower() == 'rare':
-    x_train, y_train = np.array(x_R03), np.array(y_R03)
-    if valid.lower() == 'avg' and test.lower() == 'sub-avg':
-      x_valid, y_valid = np.array(x_R01), np.array(y_R01)
-      x_test, y_test = np.array(x_R02), np.array(y_R02)
-    elif valid.lower() == 'sub-avg' and test.lower() == 'avg':
-      x_valid, y_valid = np.array(x_R02), np.array(y_R02)
-      x_test, y_test = np.array(x_R01), np.array(y_R01)
-    else:
-      print('Error: Please specify the data groups correctly')
-      return
+    x_train, y_train = x_R03, y_R03
+    x_valid = np.vstack((x_R01, x_R02))
+    y_valid = np.concatenate((y_R01, y_R02))  
   else:
     print('Error: Please specify the data groups correctly')
     return
   
+  np.random.shuffle(x_train)
+  np.random.shuffle(y_train)
+  np.random.shuffle(x_valid)
+  np.random.shuffle(y_valid)
+  
   print(x_train.shape, y_train.shape)
   print(x_valid.shape, y_valid.shape)
-  print(x_test.shape, y_test.shape)
-  
-  x_train, y_train, x_valid, y_valid, x_test, y_test = prepareDataset(x_train, y_train, x_valid, y_valid, x_test, y_test)
+  print(Xtest.shape, Ytest.shape)
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
 
 def prepareDataGT(x_data, x_test, y_data, y_test, startify=None):
   '''Prepare Data for Ground Truth Experiments'''
-  Y_st = None
   
-  if startify:
-    Y_st = y_data
+  Y_st = y_data if stratify else None
   
   x_train, x_valid, y_train, y_valid = train_test_split(x_data, y_data, train_size= 0.7, test_size= 0.3, stratify = Y_st)
   
@@ -451,36 +407,4 @@ def prepareDataGT(x_data, x_test, y_data, y_test, startify=None):
   print(x_valid.shape, y_valid.shape)
   print(x_test.shape, y_test.shape)
   
-  x_train, y_train, x_valid, y_valid, x_test, y_test = prepareDataset(x_train, y_train, x_valid, y_valid, x_test, y_test)
-  
   return x_train, y_train, x_valid, y_valid, x_test, y_test
-
-def prepareDatasetX (DS):
-  '''>>> VGG FUNCTION <<<
-      Preparing X Data'''
-      
-  DS = np.dstack([DS] * 3)
-  DS = DS.reshape(-1, 28,28,3)
-  DS = np.asarray([img_to_array(array_to_img(im, scale=False).resize((48,48))) for im in DS])
-  DS = DS / 255.
-  DS = DS.astype('float32')
-  
-  return DS
-  
-def prepareDataset(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
-  '''>>> VGG FUNCTION <<<
-      Preparing X & Y Data'''
-
-  print('Preparing X Data')
-  X_tr = prepareDatasetX(X_train)
-  X_v = prepareDatasetX(X_valid)
-  X_te = prepareDatasetX(X_test)
-
-  print('Preparing Y Data')
-  Y_tr = to_categorical(Y_train)
-  Y_v = to_categorical(Y_valid)
-  Y_te = to_categorical(Y_test)
-  
-  print('Data is ready')
-  
-  return X_tr, Y_tr, X_v, Y_v, X_te, Y_te
