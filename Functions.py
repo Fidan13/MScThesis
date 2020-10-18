@@ -44,9 +44,10 @@ all_exp = {
         15:[30, 35, 35]
     },
     6:{
-        16:['Sub-Average'],
-        17:['Rare'],
-        18:['Average']
+        16:[70, 20, 10, 'Average'],
+        17:[10, 20, 70, 'Rare'],
+        18:[10, 70, 20, 'Sub-Average'],
+        19:[20, 70, 10, 'Sub-Average']
     }
 }
 
@@ -63,7 +64,7 @@ def printExps(groups):
       if group != 6:
         print(f'Experiment: {exp}>\t\t{this_group[exp][0]}\t{this_group[exp][1]}\t{this_group[exp][2]}')
       else:
-        print(f'Experiment: {exp}>\t\t train on {this_group[exp][0]}')
+        print(f'Experiment: {exp}>\t\t train on {this_group[exp][3]}')
     print('--------------------------------------------')
     
 def expDetails(exps):
@@ -99,16 +100,16 @@ def expDetails(exps):
     print(f'The data split is {strat}')
     return ds, model, g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
   
-  [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
+  [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)][:3]
   if g_idx == '6':
     if exp_idx == '16':
       train = 'sub-avg'
     elif exp_idx == '17':
       train = 'rare'
-    elif exp_idx == '18':
+    elif exp_idx == '18' or exp_idx == '19':
       train = 'avg'
     else:
-      print('Warning: Please choose one of these experiments (16, 17 or 18)')
+      print('Warning: Please choose one of these experiments (16, 17, 18 or 19)')
     print(f'Model will be trained on {train}')
     return ds, model, g_idx, exp_idx, avg, sub, rare, stratify, train
    
