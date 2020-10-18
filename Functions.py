@@ -44,10 +44,9 @@ all_exp = {
         15:[30, 35, 35]
     },
     6:{
-        16:[10, 70, 20],
-        17:[10, 20, 70],
-        18:[70, 20, 10],
-        19:[70, 10, 20]
+        16:['Sub-Average'],
+        17:['Rare'],
+        18:['Average']
     }
 }
 
@@ -61,13 +60,16 @@ def printExps(groups):
     print(f'Group: {group}')
     this_group = groups[group]
     for exp in this_group:
-      print(f'Experiment: {exp}>\t\t{this_group[exp][0]}\t{this_group[exp][1]}\t{this_group[exp][2]}')
+      if group != 6:
+        print(f'Experiment: {exp}>\t\t{this_group[exp][0]}\t{this_group[exp][1]}\t{this_group[exp][2]}')
+      else:
+        print(f'Experiment: {exp}>\t\t train on {this_group[exp][0]}')
     print('--------------------------------------------')
     
 def expDetails(exps):
   '''Choosing group and experiment'''
   printExps(exps)
-  train, valid, test = None, None, None
+  train = None
   avg, sub, rare = None, None, None
   stratify = None
   g_idx = input('Enter group No.\t')
@@ -100,17 +102,15 @@ def expDetails(exps):
   [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)]
   if g_idx == '6':
     if exp_idx == '16':
-      train, valid, test = 'sub-avg', 'rare', 'avg'
+      train = 'sub-avg'
     elif exp_idx == '17':
-      train, valid, test = 'rare', 'sub-avg', 'avg'
+      train = 'rare'
     elif exp_idx == '18':
-      train, valid, test = 'avg', 'sub-avg', 'rare'
-    elif exp_idx == '19':
-      train, valid, test = 'avg', 'rare', 'sub-avg'
+      train = 'avg'
     else:
-      print('Warning: Please choose one of these experiments (16, 17, 18 or 19)')
-    print(f'Model will be trained on {train} validated on {valid} and tested on {test}')
-    return ds, model, g_idx, exp_idx, avg, sub, rare, stratify, train, valid, test
+      print('Warning: Please choose one of these experiments (16, 17 or 18)')
+    print(f'Model will be trained on {train}')
+    return ds, model, g_idx, exp_idx, avg, sub, rare, stratify, train
    
   strat, stratify = stratified()
 
