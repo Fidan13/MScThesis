@@ -6,7 +6,7 @@ import keras
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Dense, Dropout, Flatten, GlobalAveragePooling2D
 from keras.applications.resnet50 import ResNet50
 from keras.utils import to_categorical
 from keras import optimizers
