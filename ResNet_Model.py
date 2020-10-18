@@ -22,7 +22,7 @@ def trainModel(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   IMG_HEIGHT = 32 
   IMG_WIDTH = 32
   IMG_DEPTH = 3
-  NB_EPOCHS = 50
+  NB_EPOCHS = 20
   no_of_class = noClass(DS)
   print('Parameters are defined')
   
