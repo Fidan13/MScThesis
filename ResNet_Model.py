@@ -1,47 +1,48 @@
 from sklearn.metrics import accuracy_score, hamming_loss, precision_recall_fscore_support
 import numpy as np
 
-import matplotlib.pyplot as plt
 import keras
-from sklearn.model_selection import train_test_split
-from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten #, GlobalAveragePooling2D
-from keras.applications.resnet50 import ResNet50
+from keras.preprocessing.image import ImageDataGenerator, img_to_array, array_to_img
 from keras.utils import to_categorical
+from keras.applications.resnet50 import ResNet50
+from keras.layers import Dense, Dropout, Flatten, GlobalAveragePooling2D
+from keras import models
+from keras.models import Model
 from keras import optimizers
-import tensorflow as tf
-from tensorflow import keras
 
-#Define ResNet50 model training function
+from skimage.transform import resize
+
+
 def trainModel(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   '''Build and Train (pretrained) ResNet50 Model'''
   #Prepare Dataset for training
   x_train, y_train, x_valid, y_valid, x_test, y_test = prepareDataset(x_train, y_train, x_valid, y_valid, x_test, y_test)
   
   # Define the parameters for ResNet50 model.
-  NB_EPOCHS = 20
+  IMG_HEIGHT = 32 
+  IMG_WIDTH = 32
+  IMG_DEPTH = 3
+  NB_EPOCHS = 50
   no_of_class = noClass(DS)
   print('Parameters are defined')
   
   #Base Model
   base_model = ResNet50(include_top=False,
                         pooling='avg',
-                        weights='imagenet')
+                        weights='imagenet',
+                        input_shape=(IMG_HEIGHT, IMG_WIDTH, IMG_DEPTH))
                            
   print('Base Model is created')
   base_model.summary()
-  
+
   # Adding Dense Layers
-  # Global Average Pooling layer (better way to "flatten")
-  #x = base_model.output
-  #x = GlobalAveragePooling2D()(x)
+  x = base_model.output
   # Adding a fully-connected layer
   x = Dense(1024, activation='relu')(x)
   # Addinf a softmax layer -- no of class
   predictions = Dense(no_of_class, activation='softmax')(x)
   
-  # Create new model
+  # # Create new model
   model = Model(inputs=base_model.input, outputs=predictions)
   
   # Conv & pooling layers are not trainable
@@ -122,9 +123,9 @@ def prepareDataset(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
       Preparing X & Y Data'''
 
   print('Preparing X Data')
-  X_tr = X_train.astype(np.float) / 255.0
-  X_v = X_valid.astype(np.float) / 255.0
-  X_te = X_test.astype(np.float) / 255.0
+  X_tr = prepareXData(X_train)
+  X_v = prepareXData(X_valid)
+  X_te = prepareXData(X_test)
 
   print('Preparing Y Data')
   Y_tr = to_categorical(Y_train)
@@ -134,6 +135,18 @@ def prepareDataset(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
   print('Data is ready')
   
   return X_tr, Y_tr, X_v, Y_v, X_te, Y_te
+  
+def prepareXData(DS):
+  '''>>> ResNet FUNCTION <<<
+      Preparing X Data'''
+    
+  DS = np.dstack([DS] * 3)
+  DS = DS.reshape(-1, 28,28,3)
+  DS = np.asarray([img_to_array(array_to_img(im, scale=False).resize((32,32))) for im in DS])
+  DS = DS / 255.
+  DS = DS.astype('float32')
+  
+  return DS
   
 def modelPerformance(model, features, labels):
   '''Measure Model Performance'''
