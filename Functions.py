@@ -64,7 +64,7 @@ def printExps(groups):
       if group != 6:
         print(f'Experiment: {exp}>\t\t{this_group[exp][0]}\t{this_group[exp][1]}\t{this_group[exp][2]}')
       else:
-        print(f'Experiment: {exp}>\t\t train on {this_group[exp][3]}')
+        print(f'Experiment: {exp}>\t\t{this_group[exp][0]}\t{this_group[exp][1]}\t{this_group[exp][2]\t\t train on {this_group[exp][3]}')
     print('--------------------------------------------')
     
 def expDetails(exps):
