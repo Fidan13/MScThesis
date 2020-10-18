@@ -27,7 +27,7 @@ def trainModel(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   #Base Model
   base_model = ResNet50(include_top=False,
                         pooling='avg',
-                        weights=imagenet)
+                        weights='imagenet')
                            
   print('Base Model is created')
   base_model.summary()
