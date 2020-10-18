@@ -6,7 +6,7 @@ import keras
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten, GlobalAveragePooling2D
+from keras.layers import Dense, Dropout, Flatten #, GlobalAveragePooling2D
 from keras.applications.resnet50 import ResNet50
 from keras.utils import to_categorical
 from keras import optimizers
@@ -34,8 +34,8 @@ def trainModel(DS, x_train, y_train, x_valid, y_valid, x_test, y_test):
   
   # Adding Dense Layers
   # Global Average Pooling layer (better way to "flatten")
-  x = base_model.output
-  x = GlobalAveragePooling2D()(x)
+  #x = base_model.output
+  #x = GlobalAveragePooling2D()(x)
   # Adding a fully-connected layer
   x = Dense(1024, activation='relu')(x)
   # Addinf a softmax layer -- no of class
