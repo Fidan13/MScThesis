@@ -73,7 +73,7 @@ def expDetails(exps):
   g_idx = input('Enter group No.\t')
   exp_idx = input('Enter exp No.\t')
   ds = input('(1) MNIST\n(2) FashionMNIST\n')
-  model = input('(1) VGG16\n(2) InceptionV3\n')
+  model = input('(1) VGG16\n(2) InceptionV3\n(3) ResNet50\n')
   
   if ds == '1':
     ds = 'MNIST'
@@ -84,6 +84,8 @@ def expDetails(exps):
     model = 'VGG'
   elif model == '2':
     model = 'Inception'
+  elif model == '3':
+    model = 'ResNet'
   
   print('DATASET is:\t', ds)
   print('MODEL is:\t', model)
