@@ -103,11 +103,11 @@ def expDetails(exps):
   [avg, sub, rare] = exps[int(g_idx)][int(exp_idx)][:3]
   if g_idx == '6':
     if exp_idx == '16':
-      train = 'sub-avg'
+      train = 'avg'
     elif exp_idx == '17':
       train = 'rare'
     elif exp_idx == '18' or exp_idx == '19':
-      train = 'avg'
+      train = 'sub-avg'
     else:
       print('Warning: Please choose one of these experiments (16, 17, 18 or 19)')
     print(f'Model will be trained on {train}')
@@ -315,8 +315,9 @@ def showSplit(R_1, R_2, R_3, cluster_no):
 
   return None
 
-def prepareData(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, stratify = False):
+def prepareData(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, Xtest, Ytest, stratify = False):
   '''Data Preparation and Train, Test, Validate splitting for training'''
+  x_test, y_test = Xtest, Ytest
   x_R01, y_R01 = [], []
   x_R02, y_R02 = [], []
   x_R03, y_R03 = [], []
@@ -357,6 +358,7 @@ def TrainValidSplit(x_Region01, y_Region01, x_Region02, y_Region02, x_Region03, 
   
 def prepareDataSpecial(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_labels, R_3_original, R_3_labels, Xtest, Ytest, train = 'na'):
   '''Special Experiments Data Preparation and Train, Test, Validate splitting for training'''
+  x_test, y_test = Xtest, Ytest
   x_R01, y_R01 = [], []
   x_R02, y_R02 = [], []
   x_R03, y_R03 = [], []
@@ -395,7 +397,7 @@ def prepareDataSpecial(no_cluster, R_1_original, R_1_labels, R_2_original, R_2_l
   
   print(x_train.shape, y_train.shape)
   print(x_valid.shape, y_valid.shape)
-  print(Xtest.shape, Ytest.shape)
+  print(x_test.shape, y_test.shape)
 
   return x_train, y_train, x_valid, y_valid, x_test, y_test
 
